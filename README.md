@@ -7,27 +7,19 @@ Our exploratory data analysis on this dataset can be found [here](https://kayden
 ---
 
 ## Framing the Problem
-Our goal is to predict the duration of power outage based on features such as month, outage category, anomaly level and start time. This is a regression problem. The response variable we choose is the duration of outage in minutes, because predicting outage duration could give people instructional information about approximately how much they need to wait before the power restores so that they could adjust their schedule accordingly to minimize the inconvenience brought by the outage. The metric we are using is rooted mean squared error (RMSE). We choose RMSE because it is a widely accepted metric with mathematical properties suitable for statistical analysis, and it provides direct information about the difference between predicted and actual data. We preferred RMSE over MSE because RMSE is on the same scale as the target variable compared to MSE, which makes interpreting the performance of the model more easy.
+Our goal is to predict the duration of power outage based on features such as month, cause of the outage, anomaly level and start time, which are all information that could be accessed before the happening of each outage. Note that we can know the cause of the power outage by using many resources, for example, news reports regarding extreme weathers, the date of last time staff have maintained the equipment, or the live footage of people trespassing areas. The anomaly level can be estimated by the local climate conditions reported by reliable resources like weather reports. This is a regression problem. The response variable we choose is the duration of outage in minutes, because predicting outage duration could give people instructional information about approximately how much they need to wait before the power restores so that they could adjust their schedule accordingly to minimize the inconvenience brought by the outage. The metric we are using is rooted mean squared error (RMSE). We choose RMSE because it is a widely accepted metric with mathematical properties suitable for statistical analysis, and it provides direct information about the difference between predicted and actual data. We preferred RMSE over MSE because RMSE is on the same scale as the target variable compared to MSE, which makes interpreting the performance of the model more easy.
 
 ---
 
 ## Baseline Model
 
-Our baseline model is a linear regression model that uses features of month, category, anomaly level and outage start time (in hour). Month, category, and outage start time are one-hot encoded categorical features in our case, while the anomaly level is quantitative. For encodings, we converted the unit of start time to hour and then one-hot encoded it along with month and category. Our baseline model on training set presented a RMSE of 5522 and testing set presented a RMSE of 1221. We believe its performance is not decent enough, since the RMSE value is reasonably low so it should give an relatively reliable prediction. It is also worth noting that our training set RMSE and testing set RMSE are similar, suggesting that there seems no over-fitting to the training data in our baseline model. 
+Our baseline model is a linear regression model that uses features of month and outage start time (in hour). Month and outrage start time are one-hot encoded categorical features in our case. For encodings, we converted the unit of start time to hour and then one-hot encoded it along with month. Our baseline model presented a training set RMSE of 4138.77 and testing set RMSE of 4747.35. It is worth noting that the training set RMSE is similar to testing set RMSE, suggesting that there is no over-fitting in our baseline model. We believe its performance is not decent enough, since the RMSE value is pretty high given that the average outage duration in the dataset is 2845.51.
 
 ---
 
 ## Final Model
 
-From initial observation, we noticed that the OUTAGE.DURATION is either significantly shorter or longer when the CUSTOMERS.AFFECTED is missing. So we speculate that the extreme cases of OUTAGE.DURATION can leads to the missingness of CUSTOMERS.AFFECTED, such that CUSTOMERS.AFFECTED is NMAR.
-
-We conduct permutation test to see if the missingness of CUSTOMERS.AFFECTED depends on OUTAGE.DURATION.
-
-Null Hypothesis: The mean outage duration of missing CUSTOMERS.AFFECTED equals the mean outage duration of not missing CUSTOMERS.AFFECTED.
-
-Alternative Hypothesis: The mean outage duration of missing CUSTOMERS.AFFECTED is smaller than the mean outage duration of not missing CUSTOMERS.AFFECTED.
-
-We use mean difference between missing and not missing as our test statistic.
+For our final model, we engineered and added 2 new features – cause of the outage and anomaly level. Anomaly level represents the oceanic El Niño/La Niña (ONI) index referring to the cold and warm episodes by season, and it could provide information about local climate conditions when the outages happen. Such climate information is useful since it typically takes longer to repair when the weather is extreme. Knowing what causes the outage could also be useful, since some causes of the outage often take longer for it to be repaired, such as severe weather and equipment failure. The modeling algorithm we chose is a random forest regressor, which combines multiple decision trees to perform regression tasks. The best hyperparameters are random_max_depth = 10 and randomforest_n_estimators = 50. The method we used to select the hyperparameters and the overall model is grid search with 5 folds. The final model performs better than the baseline model with an training RMSE of 2495.57, which is 1643.20 less than the baseline model. There might be some over-fitting in our final model because our testing RMSE is 4295.33, we tried many combinations of features and we conclude that the difference is due to the dataset doesn't contain a large enough or diversed enough dataset.
 
 <iframe src="assets/final_model_one.html" width=800 height=600 frameBorder=0></iframe>
 
