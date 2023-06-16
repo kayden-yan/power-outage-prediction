@@ -4,7 +4,7 @@ by Jiaqing Yan(j6yan@ucsd.edu), Shiyuan Wang(shw088@ucsd.edu)
 
 Our exploratory data analysis on this dataset can be found [here](https://kayden-yan.github.io/power-outage-discovery/).
 
-The data came from [here](The data came from https://engineering.purdue.edu/LASCI/research-data/outages/outagerisks).
+The data came from [here](https://engineering.purdue.edu/LASCI/research-data/outages/outagerisks).
 
 ---
 
